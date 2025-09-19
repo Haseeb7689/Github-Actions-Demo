@@ -13,6 +13,8 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      DEMO_TITLE: "GitHub Actions — Simple Demo (from env)"
 
     steps:
       - name: Checkout Repo
