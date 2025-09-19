@@ -22,7 +22,7 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           name: github-pages-${{ github.run_id }}
-          path: index.html
+          path: .
 
       - name: Deploy to GitHub Pages
         id: deploy
