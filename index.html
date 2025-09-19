@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GitHub Actions — Simple Demo</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+          Arial;
+        max-width: 900px;
+        margin: 40px auto;
+        line-height: 1.5;
+        color: #111;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+      .card {
+        border: 1px solid #e6e6e6;
+        padding: 18px;
+        border-radius: 8px;
+        box-shadow: 0 6px 18px rgba(10, 10, 10, 0.03);
+      }
+      pre {
+        background: #f7f7f8;
+        padding: 12px;
+        overflow: auto;
+        border-radius: 6px;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono",
+          monospace;
+      }
+      footer {
+        margin-top: 28px;
+        font-size: 14px;
+        color: #555;
+      }
+      .example {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        padding: 8px 12px;
+        background: #0366d6;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img
+        src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+        alt="GH"
+        width="48"
+        height="48"
+      />
+      <div>
+        <h1>GitHub Actions — Simple Demo</h1>
+        <div style="color: #666">
+          A tiny static HTML page + an example workflow to show how Actions runs
+          on push.
+        </div>
+      </div>
+    </header>
+
+    <main style="margin-top: 22px">
+      <section class="card">
+        <h2 style="margin-top: 0">What this demo does</h2>
+        <p>
+          This repository contains a single <code>index.html</code> file. The
+          included GitHub Actions workflow (see below) runs on every push and
+          performs a quick check to ensure <code>index.html</code> exists and
+          prints its size. It's intentionally minimal so you can see the flow of
+          data and logs in Actions.
+        </p>
+
+        <h3>How to use</h3>
+        <ol>
+          <li>Create a new GitHub repo (or use an existing one).</li>
+          <li>
+            Copy this file and commit it as <code>index.html</code> at the
+            repository root.
+          </li>
+          <li>
+            Create the workflow file at
+            <code>.github/workflows/ci.yml</code> (example below) and push.
+          </li>
+          <li>Open the Actions tab on GitHub to watch the run logs.</li>
+        </ol>
+
+        <h3>
+          Example workflow (save as <code>.github/workflows/ci.yml</code>)
+        </h3>
+        <pre><code class="language-yaml">name: simple-check
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  check-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Verify index.html exists and show size
+        run: |
+          echo "Listing root files:"
+          ls -la
+          if [ -f index.html ]; then
+            echo "index.html found — size (bytes):"
+            wc -c index.html
+          else
+            echo "index.html NOT FOUND — failing the job"
+            exit 1
+          fi
+</code></pre>
+
+        <h3>What you'll see in Actions</h3>
+        <p>
+          When the workflow runs you'll see each step in the Actions UI. The
+          <strong>Verify index.html</strong> step prints the listing and size or
+          fails the job if the file is missing — useful as a smoke check for
+          static sites.
+        </p>
+
+        <div class="example" style="margin-top: 12px">
+          <a
+            class="btn"
+            href="#"
+            onclick="alert('Copy the HTML and the YAML into your repo. Open the Actions tab after push!')"
+            >Copy &amp; Run</a
+          >
+          <a class="btn" href="https://docs.github.com/actions" target="_blank"
+            >GitHub Actions docs</a
+          >
+        </div>
+      </section>
+
+      <footer>
+        Tip: To extend this demo you can add steps that run linters, run unit
+        tests, or deploy to GitHub Pages. Tell me which you'd like and I'll add
+        an example workflow.
+      </footer>
+    </main>
+  </body>
+</html>
