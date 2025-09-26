@@ -1,0 +1,38 @@
+name: Deploy on FTP
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Verify secrets are set
+        run: |
+          echo "Verifying secrets are available..."
+          if [ -z "${{ secrets.FTP_SERVER }}" ]; then
+           echo "ERROR: WEBSITE_FTP_SERVER secret is not set"
+           exit 1
+          fi
+          if [ -z "${{ secrets.FTP_USERNAME }}" ]; then
+           echo "ERROR: WEBSITE_FTP_USERNAME secret is not set"
+           exit 1
+          fi
+          if [ -z "${{ secrets.FTP_PASSWORD }}" ]; then
+           echo "ERROR: WEBSITE_FTP_PASSWORD secret is not set"
+           exit 1
+          fi
+          echo "All secrets are properly set!"
+
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
