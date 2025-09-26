@@ -27,6 +27,10 @@ jobs:
            echo "ERROR: FTP_PASSWORD secret is not set"
            exit 1
           fi
+          if [ -z "${{ secrets.FTP_PORT }}" ]; then
+           echo "ERROR: FTP_PORT secret is not set"
+           exit 1
+          fi
           echo "All secrets are properly set!"
 
       - name: Deploy to FTP
