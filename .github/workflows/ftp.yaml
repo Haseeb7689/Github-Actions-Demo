@@ -4,10 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -33,27 +33,7 @@ jobs:
           fi
           echo "All secrets are properly set!"
 
-      - name: Fix/rename remote folder to public_html (one-time)
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_PORT: ${{ secrets.FTP_PORT }}
-        run: |
-          echo "Running one-time remote rename/move (secrets masked)..."
-          sudo apt-get update -qq
-          sudo apt-get install -y lftp -qq
-          # disable strict cert checking only for this one-time operation (use with caution)
-          # 1) If 'pubic-html' exists, rename it to 'public_html'
-          # 2) Ensure public_html exists and move index.html into it (if present in root)
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_SERVER" -e "\
-            set ssl:verify-certificate no; \
-            if (exists pubic-html) { mv pubic-html public_html; } ; \
-            mkdir -p public_html ; \
-            if (exists index.html) { mv index.html public_html/; } ; \
-            bye"
-
-      - name: Deploy to FTP (to public_html)
+      - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -61,4 +41,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
           local-dir: ./
-          server-dir: /public_html/
+          server-dir: /
