@@ -42,8 +42,8 @@ jobs:
           echo "Listing remote root via FTP (secrets masked in logs)..."
           sudo apt-get update -qq
           sudo apt-get install -y lftp -qq
-          # list remote root (will be masked in logs)
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_SERVER" -e "cls -la; bye"
+          # allow connections even if cert hostname doesn't match (debug only)
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_SERVER" -e "set ssl:verify-certificate no; cls -la; bye"
 
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
