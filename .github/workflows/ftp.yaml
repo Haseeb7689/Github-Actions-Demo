@@ -16,15 +16,15 @@ jobs:
         run: |
           echo "Verifying secrets are available..."
           if [ -z "${{ secrets.FTP_SERVER }}" ]; then
-           echo "ERROR: WEBSITE_FTP_SERVER secret is not set"
+           echo "ERROR: FTP_SERVER secret is not set"
            exit 1
           fi
           if [ -z "${{ secrets.FTP_USERNAME }}" ]; then
-           echo "ERROR: WEBSITE_FTP_USERNAME secret is not set"
+           echo "ERROR: FTP_USERNAME secret is not set"
            exit 1
           fi
           if [ -z "${{ secrets.FTP_PASSWORD }}" ]; then
-           echo "ERROR: WEBSITE_FTP_PASSWORD secret is not set"
+           echo "ERROR: FTP_PASSWORD secret is not set"
            exit 1
           fi
           echo "All secrets are properly set!"
@@ -35,4 +35,5 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT }}
           local-dir: ./
