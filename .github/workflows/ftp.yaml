@@ -33,6 +33,11 @@ jobs:
           fi
           echo "All secrets are properly set!"
 
+      - name: Show remote root (diagnose)
+        run: |
+          echo "Listing remote root via FTP (masked secrets)..."
+          curl -v ftp://$FTP_SERVER:$FTP_PORT/ --user "$FTP_USERNAME:$FTP_PASSWORD"
+
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -41,4 +46,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
           local-dir: ./
-          server-dir: /pubic-html/
+          server-dir: /
