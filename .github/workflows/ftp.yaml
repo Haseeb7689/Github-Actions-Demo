@@ -41,4 +41,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
           local-dir: ./
-          server-dir: /
+          server-dir: /pubic-html/
