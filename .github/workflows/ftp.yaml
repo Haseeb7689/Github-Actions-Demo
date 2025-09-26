@@ -33,14 +33,6 @@ jobs:
           fi
           echo "All secrets are properly set!"
 
-      - name: Inspect remote FTP root with lftp (lists folders)
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y lftp
-          echo "Listing root folder on FTP server..."
-          # force explicit TLS (since your host uses Explicit FTP over TLS)
-          lftp -u "${{ secrets.FTP_USERNAME }}","${{ secrets.FTP_PASSWORD }}" -e "set ftp:ssl-force true; set ftp:ssl-protect-data true; ls -la; quit" "${{ secrets.FTP_SERVER }}" || true
-
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
