@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -32,20 +33,27 @@ jobs:
           fi
           echo "All secrets are properly set!"
 
-      - name: Show remote root (diagnose)
+      - name: Fix/rename remote folder to public_html (one-time)
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_PORT: ${{ secrets.FTP_PORT }}
         run: |
-          echo "Listing remote root via FTP (secrets masked in logs)..."
+          echo "Running one-time remote rename/move (secrets masked)..."
           sudo apt-get update -qq
           sudo apt-get install -y lftp -qq
-          # allow connections even if cert hostname doesn't match (debug only)
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_SERVER" -e "set ssl:verify-certificate no; cls -la; bye"
+          # disable strict cert checking only for this one-time operation (use with caution)
+          # 1) If 'pubic-html' exists, rename it to 'public_html'
+          # 2) Ensure public_html exists and move index.html into it (if present in root)
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_SERVER" -e "\
+            set ssl:verify-certificate no; \
+            if (exists pubic-html) { mv pubic-html public_html; } ; \
+            mkdir -p public_html ; \
+            if (exists index.html) { mv index.html public_html/; } ; \
+            bye"
 
-      - name: Deploy to FTP
+      - name: Deploy to FTP (to public_html)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -53,4 +61,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
           local-dir: ./
-          server-dir: /pubic-html/
+          server-dir: /public_html/
