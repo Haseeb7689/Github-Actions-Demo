@@ -41,9 +41,9 @@ jobs:
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT }}
+          server: margham.app
+          username: haseeb@margham.app
+          password: XU@iLxXLwH2gGYqvcBoN
+          port: 21
           local-dir: ./
           server-dir: /
