@@ -53,4 +53,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
           local-dir: ./
-          server-dir: /public_html/ # try /public_html/ if root doesn't serve your site
+          server-dir: / # try /public_html/ if root doesn't serve your site
