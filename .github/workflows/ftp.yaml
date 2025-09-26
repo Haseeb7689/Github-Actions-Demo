@@ -7,7 +7,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -34,16 +33,24 @@ jobs:
           echo "All secrets are properly set!"
 
       - name: Show remote root (diagnose)
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_PORT: ${{ secrets.FTP_PORT }}
         run: |
-          echo "Listing remote root via FTP (masked secrets)..."
-          curl -v ftp://$FTP_SERVER:$FTP_PORT/ --user "$FTP_USERNAME:$FTP_PASSWORD"
+          echo "Listing remote root via FTP (secrets masked in logs)..."
+          apt-get update -qq
+          apt-get install -y lftp -qq
+          # list remote root (will be masked in logs)
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_SERVER" -e "cls -la; quit"
 
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: margham.app
-          username: haseeb@margham.app
-          password: XU@iLxXLwH2gGYqvcBoN
-          port: 21
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT }}
           local-dir: ./
-          server-dir: /
+          server-dir: /public_html/ # try /public_html/ if root doesn't serve your site
