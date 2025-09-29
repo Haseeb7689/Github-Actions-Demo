@@ -31,7 +31,7 @@ jobs:
            echo "ERROR: FTP_PORT secret is not set"
            exit 1
           fi
-          echo "All secrets are properly set!"
+          echo "All secrets are properly set"
 
       - name: Deploy to FTP
         uses: SamKirkland/ftp-deploy-action@v4.3.5
